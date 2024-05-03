@@ -1,6 +1,6 @@
 const http = require("http");
 
-const httpListenPort = precess.env.PORT || 3005;
+const httpListenPort = process.env.PORT || 3005;
 
 const responseHeaders = {
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, Content-Length, X-Requested-With',
@@ -34,12 +34,24 @@ function respondFailed(res, statusCode, message) {
     res.end();
 }
 
+const todos = [];
+
 function httpListener(req, res) {
     let body = "";
     req.on("data", (chunck) => body += chunck);
 
     //
-    
+    if (req.url === "/todos" && req.method === "GET") {
+        respondSuccessful(res, todos);
+    }
+
+
+    else if (req.method === "OPTIONS") {
+        respondSuccessful(res, null);
+    }
+    else {
+        respondFailed(res, 404, "無此路由");
+    }
 }
 
 http.createServer(httpListener).listen(httpListenPort);
