@@ -19,4 +19,11 @@ DELETE {{host}}/todos
 
 DELETE {{host}}/todos/82d029ca-e27f-40aa-95d2-10c928a7ca7a
 
+###
 
+PATCH {{host}}/todos/4d71ed69-1072-444e-bba7-268555bbbca9
+Content-Type: application/json
+
+{
+    "title": "updated title"
+}

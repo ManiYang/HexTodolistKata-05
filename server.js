@@ -92,9 +92,22 @@ function httpListener(req, res) {
             respondFailed(res, 400, error.message);
         }
     }
-
-
-
+    else if (req.url.startsWith("/todos/") && req.method === "PATCH") {
+        req.on("end", ()=> {
+            try {
+                const title = getTitleFromReqBody(body);
+    
+                const id = req.url.split("/").pop();
+                const index = findTodoIndexById(todos, id);
+    
+                todos[index].title = title;
+    
+                respondSuccessful(res, todos);
+            } catch (error) {
+                respondFailed(res, 400, error.message);
+            }
+        })
+    }
     else if (req.method === "OPTIONS") {
         respondSuccessful(res, null);
     }
