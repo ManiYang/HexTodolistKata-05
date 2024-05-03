@@ -48,6 +48,14 @@ function getTitleFromReqBody(body) {
 
 const todos = [];
 
+function findTodoIndexById(todoList, id) {
+    const index = todoList.findIndex(item => item.id === id);
+    if (index === -1) {
+        throw new Error("找不到該 todo");
+    }
+    return index;
+}
+
 function httpListener(req, res) {
     let body = "";
     req.on("data", (chunck) => body += chunck);
@@ -64,10 +72,27 @@ function httpListener(req, res) {
                 todos.push({ title, id });
                 respondSuccessful(res, todos);
             } catch (error) {
-                respondFailed(res, 404, error.message);
+                respondFailed(res, 400, error.message);
             }
         });
     }
+    else if (req.url === "/todos" && req.method === "DELETE") {
+        // delete all todos
+        todos.length = 0;
+        respondSuccessful(res, todos);
+    }
+    else if (req.url.startsWith("/todos/") && req.method === "DELETE") {
+        // delete single todo
+        try {
+            const id = req.url.split("/").pop();
+            const index = findTodoIndexById(todos, id);
+            todos.splice(index, 1);
+            respondSuccessful(res, todos);
+        } catch (error) {
+            respondFailed(res, 400, error.message);
+        }
+    }
+
 
 
     else if (req.method === "OPTIONS") {

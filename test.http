@@ -8,5 +8,15 @@ POST {{host}}/todos
 Content-Type: application/json
 
 {
-    "title": "learn Node.JS 2"
+    "title": "learn Node.JS"
 }
+
+###
+
+DELETE {{host}}/todos
+
+###
+
+DELETE {{host}}/todos/82d029ca-e27f-40aa-95d2-10c928a7ca7a
+
+
