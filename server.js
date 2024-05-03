@@ -1,4 +1,5 @@
 const http = require("http");
+const { v4: uuidv4 } = require("uuid");
 
 const httpListenPort = process.env.PORT || 3005;
 
@@ -34,6 +35,17 @@ function respondFailed(res, statusCode, message) {
     res.end();
 }
 
+/**
+ * Throws an Error if title is not found in `body`.
+ */
+function getTitleFromReqBody(body) {
+    const title = JSON.parse(body).title;
+    if (title === undefined) {
+        throw new Error("title 未填寫");
+    }
+    return title;
+}
+
 const todos = [];
 
 function httpListener(req, res) {
@@ -43,6 +55,18 @@ function httpListener(req, res) {
     //
     if (req.url === "/todos" && req.method === "GET") {
         respondSuccessful(res, todos);
+    }
+    else if (req.url === "/todos" && req.method === "POST") {
+        req.on("end", () => {
+            try {
+                const title = getTitleFromReqBody(body);
+                const id = uuidv4();
+                todos.push({ title, id });
+                respondSuccessful(res, todos);
+            } catch (error) {
+                respondFailed(res, 404, error.message);
+            }
+        });
     }
 
 

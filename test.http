@@ -4,3 +4,9 @@ GET {{host}}/todos
 
 ###
 
+POST {{host}}/todos
+Content-Type: application/json
+
+{
+    "title": "learn Node.JS 2"
+}
